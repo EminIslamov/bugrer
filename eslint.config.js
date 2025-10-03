@@ -1,6 +1,7 @@
 import path from 'path';
 
 import js from '@eslint/js';
+import { defineConfig } from 'eslint/config';
 import cssModulesPlugin from 'eslint-plugin-css-modules';
 import importPlugin from 'eslint-plugin-import';
 import perfectionist from 'eslint-plugin-perfectionist';
@@ -16,7 +17,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Общие настройки для всех файлов
-export default tseslint.config([
+export default defineConfig([
   {
     ignores: [
       '*.config.*',
@@ -78,8 +79,10 @@ export default tseslint.config([
           ],
           internalPattern: [
             '^/',
+            '@/',
             '^@components/',
             '^@contexts/',
+            '^@hocs/',
             '^@hooks/',
             '^@pages/',
             '^@services/',
