@@ -1,0 +1,22 @@
+.ingredient_modal_title {
+  margin: 0 !important;
+}
+
+.ingredient_modal_content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cpfc_details {
+  display: flex;
+  gap: 20px;
+  margin-top: 32px;
+  text-align: center;
+}
+
+.cpfc_details_item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

@@ -13,7 +13,8 @@
       "@components/*": ["src/components/*"],
       "@services/*": ["src/services/*"],
       "@utils/*": ["src/utils/*"],
-      "@pages/*": ["src/pages/*"]
+      "@pages/*": ["src/pages/*"],
+      "@img/*": ["src/img/*"]
     }
   },
   "include": ["**/*.ts"]

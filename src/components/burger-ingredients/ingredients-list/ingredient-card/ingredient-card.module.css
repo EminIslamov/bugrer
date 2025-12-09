@@ -1,0 +1,17 @@
+.ingredient_card {
+  cursor: pointer;
+}
+
+.ingredient_price {
+  display: flex;
+  justify-content: center;
+}
+
+.ingredient_image {
+  display: flex;
+  justify-content: center;
+}
+
+.ingredient_name {
+  text-align: center;
+}
