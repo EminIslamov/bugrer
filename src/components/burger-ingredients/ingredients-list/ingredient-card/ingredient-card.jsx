@@ -1,5 +1,6 @@
 import { CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 
 import { IngredientsDetailModal } from '../ingredients-detail-modal/ingredients-detail-modal';
@@ -60,6 +61,17 @@ export const IngredientCard = ({
       )}
     </>
   );
+};
+
+IngredientCard.propTypes = {
+  image: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  price: PropTypes.number.isRequired,
+  imageLarge: PropTypes.string.isRequired,
+  calories: PropTypes.number.isRequired,
+  proteins: PropTypes.number.isRequired,
+  fat: PropTypes.number.isRequired,
+  carbohydrates: PropTypes.number.isRequired,
 };
 
 export default IngredientCard;

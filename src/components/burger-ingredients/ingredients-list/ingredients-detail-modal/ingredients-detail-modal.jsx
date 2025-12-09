@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 
 import { Modal } from '@/components/ui/modal/modal';
 
@@ -55,4 +56,14 @@ export const IngredientsDetailModal = ({
       </div>
     </Modal>
   );
+};
+
+IngredientsDetailModal.propTypes = {
+  imageLarge: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  calories: PropTypes.number.isRequired,
+  proteins: PropTypes.number.isRequired,
+  fat: PropTypes.number.isRequired,
+  carbohydrates: PropTypes.number.isRequired,
+  onClose: PropTypes.func.isRequired,
 };

@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 
 import { IngredientCard } from './ingredient-card/ingredient-card';
 
@@ -68,4 +69,25 @@ export const IngredientsList = ({ buns, mains, sauces }) => {
       </div>
     </div>
   );
+};
+
+const ingredientShape = PropTypes.shape({
+  _id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  type: PropTypes.oneOf(['bun', 'main', 'sauce']).isRequired,
+  proteins: PropTypes.number.isRequired,
+  fat: PropTypes.number.isRequired,
+  carbohydrates: PropTypes.number.isRequired,
+  calories: PropTypes.number.isRequired,
+  price: PropTypes.number.isRequired,
+  image: PropTypes.string.isRequired,
+  image_mobile: PropTypes.string,
+  image_large: PropTypes.string.isRequired,
+  __v: PropTypes.number,
+});
+
+IngredientsList.propTypes = {
+  buns: PropTypes.arrayOf(ingredientShape).isRequired,
+  mains: PropTypes.arrayOf(ingredientShape).isRequired,
+  sauces: PropTypes.arrayOf(ingredientShape).isRequired,
 };

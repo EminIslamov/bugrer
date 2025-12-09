@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 
 import { Modal } from '@/components/ui/modal/modal';
 import CheckMarkIcon from '@img/check-mark.svg';
@@ -50,4 +51,9 @@ export const OrderDetailsModal = ({ orderNumber, onClose }) => {
       </div>
     </Modal>
   );
+};
+
+OrderDetailsModal.propTypes = {
+  orderNumber: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
