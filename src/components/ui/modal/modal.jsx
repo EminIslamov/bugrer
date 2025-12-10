@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
+import { ModalOverlay } from './modal-overlay/modal-overlay';
+
 import styles from './modal.module.css';
 
 export const Modal = ({ children, onClose, title }) => {
@@ -37,7 +39,7 @@ export const Modal = ({ children, onClose, title }) => {
   };
 
   return createPortal(
-    <div className={styles.overlay} onClick={handleOverlayClick}>
+    <ModalOverlay onClose={handleOverlayClick}>
       <div className={styles.modal}>
         <button
           className={styles.close_button}
@@ -47,6 +49,7 @@ export const Modal = ({ children, onClose, title }) => {
         >
           <CloseIcon type="primary" />
         </button>
+
         {title && (
           <h2
             className={classNames(styles.modal_title, 'p-10 text text_type_main-large')}
@@ -54,9 +57,10 @@ export const Modal = ({ children, onClose, title }) => {
             {title}
           </h2>
         )}
+
         {children}
       </div>
-    </div>,
+    </ModalOverlay>,
     document.getElementById('modals')
   );
 };
