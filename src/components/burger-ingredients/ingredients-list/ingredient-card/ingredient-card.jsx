@@ -1,22 +1,15 @@
 import { CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import { useState } from 'react';
 
-import { IngredientsDetailModal } from '../ingredients-detail-modal/ingredients-detail-modal';
+import { Modal } from '@/components/ui/modal/modal';
+import { IngredientType } from '@/utils/types';
+
+import { IngredientsDetails } from '../ingredients-details/ingredients-details';
 
 import styles from './ingredient-card.module.css';
 
-export const IngredientCard = ({
-  image,
-  name,
-  price,
-  imageLarge,
-  calories,
-  proteins,
-  fat,
-  carbohydrates,
-}) => {
+export const IngredientCard = ({ ingredient }) => {
   const [ingredientModalVisible, setIngredientModalVisible] = useState(false);
 
   const handleClick = () => {
@@ -36,42 +29,28 @@ export const IngredientCard = ({
         tabIndex={0}
       >
         <div className={styles.ingredient_image}>
-          <img src={image} alt={name} />
+          <img src={ingredient.image} alt={ingredient.name} />
         </div>
 
         <div className={classNames(styles.ingredient_price, 'mb-2')}>
-          <p className="text text_type_digits-default mr-2">{price}</p>
+          <p className="text text_type_digits-default mr-2">{ingredient.price}</p>
           <CurrencyIcon type="primary" />
         </div>
 
-        <div className={styles.ingredient_name}>{name}</div>
+        <div className={styles.ingredient_name}>{ingredient.name}</div>
       </div>
 
       {ingredientModalVisible && (
-        <IngredientsDetailModal
-          imageLarge={imageLarge}
-          name={name}
-          calories={calories}
-          proteins={proteins}
-          fat={fat}
-          carbohydrates={carbohydrates}
-          onClose={handleClose}
-          visible={ingredientModalVisible}
-        />
+        <Modal onClose={handleClose} title="Детали ингредиента">
+          <IngredientsDetails ingredient={ingredient} />
+        </Modal>
       )}
     </>
   );
 };
 
 IngredientCard.propTypes = {
-  image: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  price: PropTypes.number.isRequired,
-  imageLarge: PropTypes.string.isRequired,
-  calories: PropTypes.number.isRequired,
-  proteins: PropTypes.number.isRequired,
-  fat: PropTypes.number.isRequired,
-  carbohydrates: PropTypes.number.isRequired,
+  ingredient: IngredientType.isRequired,
 };
 
 export default IngredientCard;

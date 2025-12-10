@@ -2,8 +2,11 @@ import { Button, CurrencyIcon } from '@krgaa/react-developer-burger-ui-component
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 
+import { Modal } from '@/components/ui/modal/modal';
+import { IngredientType } from '@/utils/types';
+
 import { ConstructorElementsList } from './constructor-elements-list/constructor-elements-list';
-import { OrderDetailsModal } from './order-details-modal/order-details-modal';
+import { OrderDetails } from './order-details/order-details';
 
 import styles from './burger-constructor.module.css';
 
@@ -42,27 +45,14 @@ export const BurgerConstructor = ({ ingredients }) => {
       </section>
 
       {isOrderModalVisible && orderNumber && (
-        <OrderDetailsModal orderNumber={orderNumber} onClose={handleCloseModal} />
+        <Modal onClose={handleCloseModal}>
+          <OrderDetails orderNumber={orderNumber} />
+        </Modal>
       )}
     </>
   );
 };
 
-const ingredientShape = PropTypes.shape({
-  _id: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(['bun', 'main', 'sauce']).isRequired,
-  proteins: PropTypes.number.isRequired,
-  fat: PropTypes.number.isRequired,
-  carbohydrates: PropTypes.number.isRequired,
-  calories: PropTypes.number.isRequired,
-  price: PropTypes.number.isRequired,
-  image: PropTypes.string.isRequired,
-  image_mobile: PropTypes.string,
-  image_large: PropTypes.string,
-  __v: PropTypes.number,
-});
-
 BurgerConstructor.propTypes = {
-  ingredients: PropTypes.arrayOf(ingredientShape).isRequired,
+  ingredients: PropTypes.arrayOf(IngredientType).isRequired,
 };

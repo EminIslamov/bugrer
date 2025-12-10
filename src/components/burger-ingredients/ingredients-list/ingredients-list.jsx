@@ -1,6 +1,8 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
+import { IngredientType } from '@/utils/types';
+
 import { IngredientCard } from './ingredient-card/ingredient-card';
 
 import styles from './ingredients-list.module.css';
@@ -13,16 +15,7 @@ export const IngredientsList = ({ buns, mains, sauces }) => {
         <ul className={styles.ingredients_list}>
           {buns.map((bun) => (
             <li key={bun._id}>
-              <IngredientCard
-                image={bun.image}
-                imageLarge={bun.image_large}
-                name={bun.name}
-                price={bun.price}
-                calories={bun.calories}
-                proteins={bun.proteins}
-                fat={bun.fat}
-                carbohydrates={bun.carbohydrates}
-              />
+              <IngredientCard ingredient={bun} />
             </li>
           ))}
         </ul>
@@ -33,16 +26,7 @@ export const IngredientsList = ({ buns, mains, sauces }) => {
         <ul className={styles.ingredients_list}>
           {sauces.map((sauce) => (
             <li key={sauce._id}>
-              <IngredientCard
-                image={sauce.image}
-                imageLarge={sauce.image_large}
-                name={sauce.name}
-                price={sauce.price}
-                calories={sauce.calories}
-                proteins={sauce.proteins}
-                fat={sauce.fat}
-                carbohydrates={sauce.carbohydrates}
-              />
+              <IngredientCard ingredient={sauce} />
             </li>
           ))}
         </ul>
@@ -53,16 +37,7 @@ export const IngredientsList = ({ buns, mains, sauces }) => {
         <ul className={styles.ingredients_list}>
           {mains.map((main) => (
             <li key={main._id}>
-              <IngredientCard
-                image={main.image}
-                imageLarge={main.image_large}
-                name={main.name}
-                price={main.price}
-                calories={main.calories}
-                proteins={main.proteins}
-                fat={main.fat}
-                carbohydrates={main.carbohydrates}
-              />
+              <IngredientCard ingredient={main} />
             </li>
           ))}
         </ul>
@@ -71,23 +46,8 @@ export const IngredientsList = ({ buns, mains, sauces }) => {
   );
 };
 
-const ingredientShape = PropTypes.shape({
-  _id: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(['bun', 'main', 'sauce']).isRequired,
-  proteins: PropTypes.number.isRequired,
-  fat: PropTypes.number.isRequired,
-  carbohydrates: PropTypes.number.isRequired,
-  calories: PropTypes.number.isRequired,
-  price: PropTypes.number.isRequired,
-  image: PropTypes.string.isRequired,
-  image_mobile: PropTypes.string,
-  image_large: PropTypes.string.isRequired,
-  __v: PropTypes.number,
-});
-
 IngredientsList.propTypes = {
-  buns: PropTypes.arrayOf(ingredientShape).isRequired,
-  mains: PropTypes.arrayOf(ingredientShape).isRequired,
-  sauces: PropTypes.arrayOf(ingredientShape).isRequired,
+  buns: PropTypes.arrayOf(IngredientType).isRequired,
+  mains: PropTypes.arrayOf(IngredientType).isRequired,
+  sauces: PropTypes.arrayOf(IngredientType).isRequired,
 };

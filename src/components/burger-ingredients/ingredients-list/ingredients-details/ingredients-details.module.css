@@ -1,8 +1,8 @@
-.ingredient_modal_title {
+.ingredient_detail_title {
   margin: 0 !important;
 }
 
-.ingredient_modal_content {
+.ingredient_detail_content {
   display: flex;
   flex-direction: column;
   align-items: center;
