@@ -1,0 +1,27 @@
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background-color: #1c1c21;
+  border-radius: 40px;
+  box-shadow: 0 24px 32px rgb(0 0 0 / 40%);
+}
+
+.close_button {
+  position: absolute;
+  top: 60px;
+  right: 40px;
+  z-index: 100;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.close_button:hover {
+  opacity: 0.6;
+}
+
+.modal_title {
+  margin: 0 !important;
+}

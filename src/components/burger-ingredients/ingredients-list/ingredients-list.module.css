@@ -1,0 +1,13 @@
+.ingredients_list_container {
+  overflow-y: auto;
+}
+
+.ingredients_list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px 24px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style-type: none;
+}

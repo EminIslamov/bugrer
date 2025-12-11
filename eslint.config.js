@@ -80,6 +80,7 @@ export default defineConfig([
           internalPattern: [
             '^/',
             '@/',
+            '^@api/',
             '^@components/',
             '^@contexts/',
             '^@hocs/',
@@ -87,6 +88,7 @@ export default defineConfig([
             '^@pages/',
             '^@services/',
             '^@utils/',
+            '^@img/',
           ],
           customGroups: {
             value: {

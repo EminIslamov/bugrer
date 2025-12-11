@@ -1,0 +1,32 @@
+.constructor_elements_list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.scrollable_container {
+  flex: 1;
+  min-height: 0;
+}
+
+.scrollable_list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 464px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style-type: none;
+}
+
+.bun {
+  margin-left: 32px;
+}
+
+.constructor_element {
+  margin-left: 8px;
+}

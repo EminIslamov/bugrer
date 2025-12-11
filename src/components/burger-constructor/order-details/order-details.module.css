@@ -1,0 +1,35 @@
+.order_details_content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.order_number {
+  color: var(--text-primary-color, #f2f2f3);
+  letter-spacing: 0;
+  text-align: center;
+  text-shadow:
+    0 0 16px rgb(51 51 255 / 50%),
+    0 0 8px rgb(51 51 255 / 50%),
+    0 4px 32px rgb(51 51 255 / 50%);
+}
+
+.order_label {
+  text-align: center;
+}
+
+.checkmark_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 60px;
+}
+
+.order_status {
+  text-align: center;
+}
+
+.order_hint {
+  text-align: center;
+}
