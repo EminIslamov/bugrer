@@ -1,7 +1,3 @@
-.ingredient_detail_title {
-  margin: 0 !important;
-}
-
 .ingredient_detail_content {
   display: flex;
   flex-direction: column;
