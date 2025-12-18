@@ -1,58 +1,112 @@
 import { Button, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
-import PropTypes from 'prop-types';
-import { useState } from 'react';
+import classNames from 'classnames';
+import { useMemo, useState } from 'react';
+import { useDrop } from 'react-dnd';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Modal } from '@/components/ui/modal/modal';
-import { IngredientType } from '@/utils/types';
+import {
+  addIngredient,
+  clearConstructor,
+  setBun,
+} from '@services/slices/burgerConstructorSlice';
+import { clearOrder, createOrder } from '@services/slices/orderSlice';
 
 import { ConstructorElementsList } from './constructor-elements-list/constructor-elements-list';
 import { OrderDetails } from './order-details/order-details';
 
 import styles from './burger-constructor.module.css';
 
-export const BurgerConstructor = ({ ingredients }) => {
+export const BurgerConstructor = () => {
+  const dispatch = useDispatch();
+  const { bun, ingredients } = useSelector((state) => state.burgerConstructor);
+  const {
+    order,
+    isLoading: isOrderLoading,
+    error: orderError,
+  } = useSelector((state) => state.order);
+
   const [isOrderModalVisible, setIsOrderModalVisible] = useState(false);
-  const [orderNumber, setOrderNumber] = useState(null);
+
+  // Расчёт общей стоимости
+  const totalPrice = useMemo(() => {
+    const bunPrice = bun ? bun.price * 2 : 0; // Две булки: верх и низ
+    const ingredientsPrice = ingredients.reduce((sum, item) => sum + item.price, 0);
+    return bunPrice + ingredientsPrice;
+  }, [bun, ingredients]);
+
+  const [{ isHover }, dropRef] = useDrop({
+    accept: 'ingredient',
+    drop: (item) => {
+      const { ingredient } = item;
+      if (ingredient.type === 'bun') {
+        dispatch(setBun(ingredient));
+      } else {
+        // Добавляем уникальный id для возможности удаления конкретного элемента
+        dispatch(addIngredient({ ...ingredient, uniqueId: crypto.randomUUID() }));
+      }
+    },
+    collect: (monitor) => ({
+      isHover: monitor.isOver(),
+    }),
+  });
 
   const handleOrderClick = () => {
-    // Генерируем случайный номер заказа (в будущем здесь будет API вызов)
-    const generatedOrderNumber = Math.floor(Math.random() * 1000000)
-      .toString()
-      .padStart(6, '0');
-    setOrderNumber(generatedOrderNumber);
+    if (!bun) return;
+
+    // Собираем ID всех ингредиентов: булка (верх) + начинки + булка (низ)
+    const ingredientIds = [bun._id, ...ingredients.map((item) => item._id), bun._id];
+
+    dispatch(createOrder(ingredientIds));
     setIsOrderModalVisible(true);
   };
 
   const handleCloseModal = () => {
     setIsOrderModalVisible(false);
+    // Очищаем заказ и конструктор после закрытия модалки
+    if (order) {
+      dispatch(clearOrder());
+      dispatch(clearConstructor());
+    }
   };
 
   return (
     <>
-      <section className={styles.burger_constructor}>
-        <ConstructorElementsList ingredients={ingredients} />
+      <section
+        ref={dropRef}
+        className={classNames(styles.burger_constructor, {
+          [styles.hover]: isHover,
+        })}
+      >
+        <ConstructorElementsList bun={bun} ingredients={ingredients} />
 
         <div className={styles.create_order}>
           <div className={styles.create_order_price}>
-            <p className="text text_type_digits-medium">1250</p>
+            <p className="text text_type_digits-medium">{totalPrice}</p>
             <CurrencyIcon type="primary" />
           </div>
 
-          <Button type="primary" size="large" onClick={handleOrderClick}>
-            Оформить заказ
+          <Button
+            type="primary"
+            size="large"
+            onClick={handleOrderClick}
+            htmlType="button"
+            disabled={!bun || isOrderLoading}
+          >
+            {isOrderLoading ? 'Оформление...' : 'Оформить заказ'}
           </Button>
         </div>
       </section>
 
-      {isOrderModalVisible && orderNumber && (
+      {isOrderModalVisible && (
         <Modal onClose={handleCloseModal}>
-          <OrderDetails orderNumber={orderNumber} />
+          <OrderDetails
+            orderNumber={order?.order?.number}
+            isLoading={isOrderLoading}
+            error={orderError}
+          />
         </Modal>
       )}
     </>
   );
-};
-
-BurgerConstructor.propTypes = {
-  ingredients: PropTypes.arrayOf(IngredientType).isRequired,
 };

@@ -1,5 +1,10 @@
 .ingredient_card {
+  position: relative;
   cursor: pointer;
+}
+
+.ingredient_card.dragging {
+  opacity: 0.5;
 }
 
 .ingredient_price {

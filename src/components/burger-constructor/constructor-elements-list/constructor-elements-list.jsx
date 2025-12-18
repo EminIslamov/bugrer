@@ -1,22 +1,14 @@
-import {
-  ConstructorElement,
-  DragIcon,
-} from '@krgaa/react-developer-burger-ui-components';
+import { ConstructorElement } from '@krgaa/react-developer-burger-ui-components';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
-import { IngredientType } from '@/utils/types';
+import { ConstructorIngredientType, IngredientType } from '@/utils/types';
+
+import { DraggableIngredient } from './draggable-ingredient/draggable-ingredient';
 
 import styles from './constructor-elements-list.module.css';
 
-export const ConstructorElementsList = ({ ingredients }) => {
-  // Находим булку
-  const bun = ingredients?.find((ingredient) => ingredient.type === 'bun');
-
-  // Находим остальные ингредиенты (main и sauce)
-  const otherIngredients =
-    ingredients?.filter((ingredient) => ingredient.type !== 'bun') || [];
-
+export const ConstructorElementsList = ({ bun, ingredients }) => {
   return (
     <ul className={styles.constructor_elements_list}>
       {/* Верхняя булка */}
@@ -35,18 +27,21 @@ export const ConstructorElementsList = ({ ingredients }) => {
       {/* Остальные ингредиенты - скроллируемая область */}
       <li className={styles.scrollable_container}>
         <ul className={classNames('custom-scroll', styles.scrollable_list)}>
-          {otherIngredients.map((ingredient, index) => (
-            <li key={`${ingredient._id}-${index}`}>
-              <DragIcon type="primary" />
-              <span className={styles.constructor_element}>
-                <ConstructorElement
-                  price={ingredient.price}
-                  text={ingredient.name}
-                  thumbnail={ingredient.image}
-                />
-              </span>
+          {ingredients.length > 0 ? (
+            ingredients.map((ingredient, index) => (
+              <DraggableIngredient
+                key={ingredient.uniqueId}
+                ingredient={ingredient}
+                index={index}
+              />
+            ))
+          ) : (
+            <li className={styles.empty_message}>
+              <p className="text text_type_main-default text_color_inactive">
+                Перетащите ингредиенты сюда
+              </p>
             </li>
-          ))}
+          )}
         </ul>
       </li>
 
@@ -62,10 +57,23 @@ export const ConstructorElementsList = ({ ingredients }) => {
           />
         </li>
       )}
+
+      {!bun && (
+        <li className={styles.bun_placeholder}>
+          <p className="text text_type_main-default text_color_inactive">
+            Выберите булку
+          </p>
+        </li>
+      )}
     </ul>
   );
 };
 
 ConstructorElementsList.propTypes = {
-  ingredients: PropTypes.arrayOf(IngredientType).isRequired,
+  bun: IngredientType,
+  ingredients: PropTypes.arrayOf(ConstructorIngredientType).isRequired,
+};
+
+ConstructorElementsList.defaultProps = {
+  bun: null,
 };

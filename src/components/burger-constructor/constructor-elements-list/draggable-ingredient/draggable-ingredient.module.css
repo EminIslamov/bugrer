@@ -1,0 +1,19 @@
+.draggable_item {
+  display: flex;
+  align-items: center;
+  cursor: grab;
+  transition: opacity 0.2s ease;
+}
+
+.draggable_item:active {
+  cursor: grabbing;
+}
+
+.draggable_item.dragging {
+  opacity: 0.3;
+}
+
+.constructor_element {
+  flex: 1;
+  margin-left: 8px;
+}

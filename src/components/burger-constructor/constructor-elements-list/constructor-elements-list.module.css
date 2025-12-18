@@ -16,7 +16,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-height: 464px;
+  max-height: 340px;
   margin: 0;
   padding: 0;
   overflow-y: auto;
@@ -27,6 +27,24 @@
   margin-left: 32px;
 }
 
-.constructor_element {
-  margin-left: 8px;
+.empty_message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80px;
+  margin-right: 16px;
+  margin-left: 32px;
+  border: 2px dashed var(--colors-interface-accent);
+  border-radius: 40px;
+}
+
+.bun_placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80px;
+  margin-right: 16px;
+  margin-left: 32px;
+  border: 2px dashed var(--colors-interface-accent);
+  border-radius: 40px;
 }
