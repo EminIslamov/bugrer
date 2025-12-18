@@ -13,11 +13,7 @@ import styles from './app.module.css';
 
 export const App = () => {
   const dispatch = useDispatch();
-  const {
-    items: ingredients,
-    isLoading,
-    error,
-  } = useSelector((state) => state.ingredients);
+  const { isLoading, error } = useSelector((state) => state.ingredients);
 
   useEffect(() => {
     dispatch(fetchIngredients());
@@ -38,7 +34,7 @@ export const App = () => {
               Соберите бургер
             </h1>
             <main className={`${styles.main} pl-5 pr-5`}>
-              <BurgerIngredients ingredients={ingredients} />
+              <BurgerIngredients />
               <BurgerConstructor />
             </main>
           </div>

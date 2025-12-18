@@ -1,10 +1,11 @@
 import { Button, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import classNames from 'classnames';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Modal } from '@/components/ui/modal/modal';
+import { useModal } from '@/hooks/useModal';
 import {
   addIngredient,
   clearConstructor,
@@ -26,7 +27,7 @@ export const BurgerConstructor = () => {
     error: orderError,
   } = useSelector((state) => state.order);
 
-  const [isOrderModalVisible, setIsOrderModalVisible] = useState(false);
+  const { isModalOpen, openModal, closeModal } = useModal();
 
   // Расчёт общей стоимости
   const totalPrice = useMemo(() => {
@@ -58,17 +59,17 @@ export const BurgerConstructor = () => {
     const ingredientIds = [bun._id, ...ingredients.map((item) => item._id), bun._id];
 
     dispatch(createOrder(ingredientIds));
-    setIsOrderModalVisible(true);
+    openModal();
   };
 
-  const handleCloseModal = () => {
-    setIsOrderModalVisible(false);
+  const handleCloseModal = useCallback(() => {
+    closeModal();
     // Очищаем заказ и конструктор после закрытия модалки
     if (order) {
       dispatch(clearOrder());
       dispatch(clearConstructor());
     }
-  };
+  }, [closeModal, dispatch, order]);
 
   return (
     <>
@@ -98,7 +99,7 @@ export const BurgerConstructor = () => {
         </div>
       </section>
 
-      {isOrderModalVisible && (
+      {isModalOpen && (
         <Modal onClose={handleCloseModal}>
           <OrderDetails
             orderNumber={order?.order?.number}

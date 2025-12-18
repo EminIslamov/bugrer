@@ -1,15 +1,14 @@
-import PropTypes from 'prop-types';
 import { useMemo, useRef, useState } from 'react';
-
-import { IngredientType } from '@/utils/types';
+import { useSelector } from 'react-redux';
 
 import { IngredientsList } from './ingredients-list/ingredients-list';
 import { IngredientsNavbar } from './ingredients-navbar/ingredients-navbar';
 
 import styles from './burger-ingredients.module.css';
 
-export const BurgerIngredients = ({ ingredients }) => {
+export const BurgerIngredients = () => {
   const [activeTab, setActiveTab] = useState('bun');
+  const { items: ingredients } = useSelector((state) => state.ingredients);
 
   const bunsRef = useRef(null);
   const saucesRef = useRef(null);
@@ -92,8 +91,4 @@ export const BurgerIngredients = ({ ingredients }) => {
       )}
     </section>
   );
-};
-
-BurgerIngredients.propTypes = {
-  ingredients: PropTypes.arrayOf(IngredientType).isRequired,
 };

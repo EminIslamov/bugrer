@@ -10,15 +10,11 @@ const initialState = {
 
 export const createOrder = createAsyncThunk(
   'order/createOrder',
-  async (ingredientIds, { rejectWithValue }) => {
-    try {
-      const response = await apiService.post('/orders', {
-        ingredients: ingredientIds,
-      });
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+  async (ingredientIds) => {
+    const response = await apiService.post('/orders', {
+      ingredients: ingredientIds,
+    });
+    return response.data;
   }
 );
 
@@ -43,7 +39,7 @@ const orderSlice = createSlice({
       })
       .addCase(createOrder.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload;
+        state.error = action.error.message;
       });
   },
 });

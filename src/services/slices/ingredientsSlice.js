@@ -10,13 +10,9 @@ const initialState = {
 
 export const fetchIngredients = createAsyncThunk(
   'ingredients/fetchIngredients',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await apiService.get('/ingredients');
-      return response.data.data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+  async () => {
+    const response = await apiService.get('/ingredients');
+    return response.data.data;
   }
 );
 
@@ -36,7 +32,7 @@ const ingredientsSlice = createSlice({
       })
       .addCase(fetchIngredients.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload;
+        state.error = action.error.message;
       });
   },
 });

@@ -1,10 +1,11 @@
 import { Counter, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import classNames from 'classnames';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useDrag } from 'react-dnd';
 import { useSelector } from 'react-redux';
 
 import { Modal } from '@/components/ui/modal/modal';
+import { useModal } from '@/hooks/useModal';
 import { IngredientType } from '@/utils/types';
 
 import { IngredientsDetails } from '../ingredients-details/ingredients-details';
@@ -12,7 +13,7 @@ import { IngredientsDetails } from '../ingredients-details/ingredients-details';
 import styles from './ingredient-card.module.css';
 
 export const IngredientCard = ({ ingredient }) => {
-  const [ingredientModalVisible, setIngredientModalVisible] = useState(false);
+  const { isModalOpen, openModal, closeModal } = useModal();
 
   // Получаем данные из конструктора для подсчёта количества
   const { bun, ingredients: constructorIngredients } = useSelector(
@@ -37,14 +38,6 @@ export const IngredientCard = ({ ingredient }) => {
     }),
   });
 
-  const handleClick = () => {
-    setIngredientModalVisible(true);
-  };
-
-  const handleClose = () => {
-    setIngredientModalVisible(false);
-  };
-
   return (
     <>
       <div
@@ -52,7 +45,7 @@ export const IngredientCard = ({ ingredient }) => {
         className={classNames(styles.ingredient_card, {
           [styles.dragging]: isDragging,
         })}
-        onClick={handleClick}
+        onClick={openModal}
         role="button"
         tabIndex={0}
         style={{ opacity: isDragging ? 0.5 : 1 }}
@@ -71,8 +64,8 @@ export const IngredientCard = ({ ingredient }) => {
         <div className={styles.ingredient_name}>{ingredient.name}</div>
       </div>
 
-      {ingredientModalVisible && (
-        <Modal onClose={handleClose} title="Детали ингредиента">
+      {isModalOpen && (
+        <Modal onClose={closeModal} title="Детали ингредиента">
           <IngredientsDetails ingredient={ingredient} />
         </Modal>
       )}
