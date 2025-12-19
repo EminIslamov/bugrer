@@ -1,3 +1,4 @@
+import { Preloader } from '@krgaa/react-developer-burger-ui-components';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
@@ -5,7 +6,27 @@ import CheckMarkIcon from '@img/check-mark.svg';
 
 import styles from './order-details.module.css';
 
-export const OrderDetails = ({ orderNumber }) => {
+export const OrderDetails = ({ orderNumber, isLoading, error }) => {
+  if (isLoading) {
+    return (
+      <div className={classNames(styles.order_details_content, 'pt-30 pb-30')}>
+        <Preloader />
+        <p className="text text_type_main-medium mt-10">Оформляем заказ...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={classNames(styles.order_details_content, 'pt-30 pb-30')}>
+        <p className="text text_type_main-medium text_color_error">
+          Ошибка при оформлении заказа
+        </p>
+        <p className="text text_type_main-default text_color_inactive mt-4">{error}</p>
+      </div>
+    );
+  }
+
   return (
     <div className={classNames(styles.order_details_content, 'pt-30 pb-30')}>
       <div
@@ -39,5 +60,13 @@ export const OrderDetails = ({ orderNumber }) => {
 };
 
 OrderDetails.propTypes = {
-  orderNumber: PropTypes.string.isRequired,
+  error: PropTypes.string,
+  isLoading: PropTypes.bool,
+  orderNumber: PropTypes.number,
+};
+
+OrderDetails.defaultProps = {
+  error: null,
+  isLoading: false,
+  orderNumber: null,
 };

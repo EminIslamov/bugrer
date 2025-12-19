@@ -1,60 +1,94 @@
-import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
-
-import { IngredientType } from '@/utils/types';
+import { useMemo, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { IngredientsList } from './ingredients-list/ingredients-list';
 import { IngredientsNavbar } from './ingredients-navbar/ingredients-navbar';
 
 import styles from './burger-ingredients.module.css';
 
-export const BurgerIngredients = ({ ingredients }) => {
-  const [buns, setBuns] = useState([]);
-  const [mains, setMains] = useState([]);
-  const [sauces, setSauces] = useState([]);
+export const BurgerIngredients = () => {
+  const [activeTab, setActiveTab] = useState('bun');
+  const { items: ingredients } = useSelector((state) => state.ingredients);
 
-  useEffect(() => {
+  const bunsRef = useRef(null);
+  const saucesRef = useRef(null);
+  const mainsRef = useRef(null);
+  const containerRef = useRef(null);
+
+  // Мемоизированная фильтрация ингредиентов
+  const { buns, sauces, mains } = useMemo(() => {
+    const result = { buns: [], sauces: [], mains: [] };
     if (ingredients?.length > 0) {
-      const newBuns = [];
-      const newMains = [];
-      const newSauces = [];
       for (const ingredient of ingredients) {
         if (ingredient.type === 'bun') {
-          newBuns.push(ingredient);
+          result.buns.push(ingredient);
         } else if (ingredient.type === 'main') {
-          newMains.push(ingredient);
+          result.mains.push(ingredient);
         } else if (ingredient.type === 'sauce') {
-          newSauces.push(ingredient);
+          result.sauces.push(ingredient);
         }
       }
-      if (newBuns.length > 0) {
-        setBuns(newBuns);
-      } else {
-        setBuns([]);
-      }
-      if (newMains.length > 0) {
-        setMains(newMains);
-      } else {
-        setMains([]);
-      }
-      if (newSauces.length > 0) {
-        setSauces(newSauces);
-      } else {
-        setSauces([]);
+    }
+    return result;
+  }, [ingredients]);
+
+  // Обработчик скролла для определения активного таба
+  const handleScroll = () => {
+    if (!containerRef.current) return;
+
+    const containerTop = containerRef.current.getBoundingClientRect().top;
+
+    const sections = [
+      { id: 'bun', ref: bunsRef },
+      { id: 'sauce', ref: saucesRef },
+      { id: 'main', ref: mainsRef },
+    ];
+
+    // Находим секцию, заголовок которой ближе всего к верху контейнера
+    let closestSection = 'bun';
+    let minDistance = Infinity;
+
+    for (const section of sections) {
+      if (section.ref.current) {
+        const sectionTop = section.ref.current.getBoundingClientRect().top;
+        const distance = Math.abs(sectionTop - containerTop);
+
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestSection = section.id;
+        }
       }
     }
-  }, [ingredients]);
+
+    setActiveTab(closestSection);
+  };
+
+  // Обработчик клика по табу для прокрутки к секции
+  const handleTabClick = (tab) => {
+    const refs = {
+      bun: bunsRef,
+      sauce: saucesRef,
+      main: mainsRef,
+    };
+
+    refs[tab]?.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <section className={styles.burger_ingredients}>
-      <IngredientsNavbar />
+      <IngredientsNavbar activeTab={activeTab} onTabClick={handleTabClick} />
       {ingredients?.length > 0 && (
-        <IngredientsList buns={buns} mains={mains} sauces={sauces} />
+        <IngredientsList
+          buns={buns}
+          mains={mains}
+          sauces={sauces}
+          bunsRef={bunsRef}
+          saucesRef={saucesRef}
+          mainsRef={mainsRef}
+          containerRef={containerRef}
+          onScroll={handleScroll}
+        />
       )}
     </section>
   );
-};
-
-BurgerIngredients.propTypes = {
-  ingredients: PropTypes.arrayOf(IngredientType).isRequired,
 };
