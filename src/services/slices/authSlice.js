@@ -1,20 +1,19 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import { authApiService } from '@api/api';
+import { apiService } from '@api/api';
 
-// Загрузка начального состояния
-// Access token НЕ сохраняем в localStorage (best practice - только в памяти)
-// Refresh token можно хранить в localStorage
+// Access token хранится только в памяти (best
+// Refresh token хранится в localStorage
 const getInitialState = () => {
   const refreshToken = localStorage.getItem('refreshToken');
   const userStr = localStorage.getItem('user');
 
   return {
     user: userStr ? JSON.parse(userStr) : null,
-    accessToken: null, // Хранится только в памяти (Redux state)
-    refreshToken: refreshToken || null, // Хранится в localStorage
+    accessToken: null,
+    refreshToken: refreshToken || null,
     isLoading: false,
-    isRestoringSession: !!refreshToken, // Флаг восстановления сессии при загрузке
+    isRestoringSession: !!refreshToken,
     error: null,
     passwordResetSuccess: false,
   };
@@ -26,20 +25,16 @@ export const login = createAsyncThunk(
   'auth/login',
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const response = await authApiService.post('/auth/login', { email, password });
+      const response = await apiService.post('/auth/login', { email, password });
       return response.data;
     } catch (error) {
-      // Более детальная обработка ошибок
       if (error.response) {
-        // Сервер ответил с кодом ошибки
         return rejectWithValue(error.response.data);
       } else if (error.request) {
-        // Запрос был сделан, но ответа не получено
         return rejectWithValue({
           message: 'Network Error: Не удалось подключиться к серверу',
         });
       } else {
-        // Что-то пошло не так при настройке запроса
         return rejectWithValue({ message: error.message });
       }
     }
@@ -50,24 +45,20 @@ export const register = createAsyncThunk(
   'auth/register',
   async ({ email, password, name }, { rejectWithValue }) => {
     try {
-      const response = await authApiService.post('/auth/register', {
+      const response = await apiService.post('/auth/register', {
         email,
         password,
         name,
       });
       return response.data;
     } catch (error) {
-      // Более детальная обработка ошибок
       if (error.response) {
-        // Сервер ответил с кодом ошибки
         return rejectWithValue(error.response.data);
       } else if (error.request) {
-        // Запрос был сделан, но ответа не получено
         return rejectWithValue({
           message: 'Network Error: Не удалось подключиться к серверу',
         });
       } else {
-        // Что-то пошло не так при настройке запроса
         return rejectWithValue({ message: error.message });
       }
     }
@@ -77,7 +68,7 @@ export const register = createAsyncThunk(
 export const requestPasswordReset = createAsyncThunk(
   'auth/requestPasswordReset',
   async (email) => {
-    const response = await authApiService.post('/password-reset', { email });
+    const response = await apiService.post('/password-reset', { email });
     return response.data;
   }
 );
@@ -85,7 +76,7 @@ export const requestPasswordReset = createAsyncThunk(
 export const resetPassword = createAsyncThunk(
   'auth/resetPassword',
   async ({ password, token }) => {
-    const response = await authApiService.post('/password-reset/reset', {
+    const response = await apiService.post('/password-reset/reset', {
       password,
       token,
     });
@@ -94,7 +85,7 @@ export const resetPassword = createAsyncThunk(
 );
 
 export const logout = createAsyncThunk('auth/logout', async (refreshToken) => {
-  const response = await authApiService.post('/auth/logout', {
+  const response = await apiService.post('/auth/logout', {
     token: refreshToken,
   });
   return response.data;
@@ -103,7 +94,7 @@ export const logout = createAsyncThunk('auth/logout', async (refreshToken) => {
 export const refreshToken = createAsyncThunk(
   'auth/refreshToken',
   async (refreshTokenValue) => {
-    const response = await authApiService.post('/auth/token', {
+    const response = await apiService.post('/auth/token', {
       token: refreshTokenValue,
     });
     return response.data;
@@ -114,7 +105,7 @@ export const getUser = createAsyncThunk(
   'auth/getUser',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await authApiService.get('/auth/user');
+      const response = await apiService.get('/auth/user');
       return response.data;
     } catch (error) {
       if (error.response) {
@@ -139,7 +130,7 @@ export const updateUser = createAsyncThunk(
       if (email !== undefined) body.email = email;
       if (password !== undefined && password !== '') body.password = password;
 
-      const response = await authApiService.patch('/auth/user', body);
+      const response = await apiService.patch('/auth/user', body);
       return response.data;
     } catch (error) {
       if (error.response) {
@@ -183,11 +174,10 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isRestoringSession = false; // Сессия установлена через логин
+        state.isRestoringSession = false;
         state.user = action.payload.user;
-        state.accessToken = action.payload.accessToken; // Только в памяти
+        state.accessToken = action.payload.accessToken;
         state.refreshToken = action.payload.refreshToken;
-        // Сохраняем только refresh token и user в localStorage
         localStorage.setItem('refreshToken', action.payload.refreshToken);
         localStorage.setItem('user', JSON.stringify(action.payload.user));
       })
@@ -206,17 +196,15 @@ const authSlice = createSlice({
       })
       .addCase(register.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isRestoringSession = false; // Сессия установлена через регистрацию
+        state.isRestoringSession = false;
         state.user = action.payload.user;
-        state.accessToken = action.payload.accessToken; // Только в памяти
+        state.accessToken = action.payload.accessToken;
         state.refreshToken = action.payload.refreshToken;
-        // Сохраняем только refresh token и user в localStorage
         localStorage.setItem('refreshToken', action.payload.refreshToken);
         localStorage.setItem('user', JSON.stringify(action.payload.user));
       })
       .addCase(register.rejected, (state, action) => {
         state.isLoading = false;
-        // Используем payload из rejectWithValue, если он есть
         const errorMessage =
           action.payload?.message ||
           action.error?.response?.data?.message ||
@@ -234,13 +222,11 @@ const authSlice = createSlice({
         state.user = null;
         state.accessToken = null;
         state.refreshToken = null;
-        // Очищаем localStorage
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
       })
       .addCase(logout.rejected, (state, action) => {
         state.isLoading = false;
-        // Даже при ошибке очищаем данные на клиенте
         state.user = null;
         state.accessToken = null;
         state.refreshToken = null;
@@ -259,16 +245,14 @@ const authSlice = createSlice({
       })
       .addCase(refreshToken.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isRestoringSession = false; // Сессия восстановлена
-        state.accessToken = action.payload.accessToken; // Только в памяти
+        state.isRestoringSession = false;
+        state.accessToken = action.payload.accessToken;
         state.refreshToken = action.payload.refreshToken;
-        // Обновляем только refresh token в localStorage
         localStorage.setItem('refreshToken', action.payload.refreshToken);
       })
       .addCase(refreshToken.rejected, (state, action) => {
         state.isLoading = false;
-        state.isRestoringSession = false; // Восстановление завершено (с ошибкой)
-        // При ошибке обновления токена очищаем данные
+        state.isRestoringSession = false;
         state.user = null;
         state.accessToken = null;
         state.refreshToken = null;
@@ -323,7 +307,6 @@ const authSlice = createSlice({
       .addCase(getUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload.user;
-        // Обновляем user в localStorage
         localStorage.setItem('user', JSON.stringify(action.payload.user));
       })
       .addCase(getUser.rejected, (state, action) => {
@@ -342,7 +325,6 @@ const authSlice = createSlice({
       .addCase(updateUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload.user;
-        // Обновляем user в localStorage
         localStorage.setItem('user', JSON.stringify(action.payload.user));
       })
       .addCase(updateUser.rejected, (state, action) => {

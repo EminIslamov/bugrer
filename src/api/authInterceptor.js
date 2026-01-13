@@ -1,6 +1,6 @@
 import { refreshToken as refreshTokenAction } from '@services/slices/authSlice';
 
-import { authApiService } from './api';
+import { apiService } from './api';
 
 let store;
 let requestInterceptorId = null;
@@ -20,25 +20,20 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
-// Настройка interceptor для authApiService
 export const setupAuthInterceptor = () => {
-  // Удаляем предыдущие interceptors, если они были добавлены
   if (requestInterceptorId !== null) {
-    authApiService.interceptors.request.eject(requestInterceptorId);
+    apiService.interceptors.request.eject(requestInterceptorId);
   }
   if (responseInterceptorId !== null) {
-    authApiService.interceptors.response.eject(responseInterceptorId);
+    apiService.interceptors.response.eject(responseInterceptorId);
   }
 
-  // Добавляем request interceptor
-  requestInterceptorId = authApiService.interceptors.request.use(
+  requestInterceptorId = apiService.interceptors.request.use(
     (config) => {
-      // Получаем access token из Redux store
       if (store) {
         const state = store.getState();
         const accessToken = state?.auth?.accessToken;
         if (accessToken) {
-          // Убираем "Bearer " если он уже есть в токене
           const token = accessToken.startsWith('Bearer ')
             ? accessToken
             : `Bearer ${accessToken}`;
@@ -52,22 +47,19 @@ export const setupAuthInterceptor = () => {
     }
   );
 
-  // Добавляем response interceptor для автоматического обновления токена
-  responseInterceptorId = authApiService.interceptors.response.use(
+  responseInterceptorId = apiService.interceptors.response.use(
     (response) => response,
     async (error) => {
       const originalRequest = error.config;
 
-      // Если получили 401 и это не запрос на обновление токена
       if (error.response?.status === 401 && !originalRequest._retry) {
         if (isRefreshing) {
-          // Если уже идет обновление токена, добавляем запрос в очередь
           return new Promise((resolve, reject) => {
             failedQueue.push({ resolve, reject });
           })
             .then((token) => {
               originalRequest.headers.Authorization = `Bearer ${token}`;
-              return authApiService(originalRequest);
+              return apiService(originalRequest);
             })
             .catch((err) => {
               return Promise.reject(err);
@@ -85,17 +77,15 @@ export const setupAuthInterceptor = () => {
             throw new Error('No refresh token available');
           }
 
-          // Обновляем токен через Redux action
           const result = await store.dispatch(refreshTokenAction(refreshToken));
 
           if (refreshTokenAction.fulfilled.match(result)) {
             const newAccessToken = result.payload.accessToken;
 
-            // Обновляем заголовок и повторяем запрос
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
             processQueue(null, newAccessToken);
 
-            return authApiService(originalRequest);
+            return apiService(originalRequest);
           } else {
             throw new Error('Failed to refresh token');
           }
