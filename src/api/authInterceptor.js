@@ -52,7 +52,18 @@ export const setupAuthInterceptor = () => {
     async (error) => {
       const originalRequest = error.config;
 
-      if (error.response?.status === 401 && !originalRequest._retry) {
+      // Исключаем эндпоинты, которые не требуют авторизации или используются для получения токенов
+      const authEndpoints = [
+        '/auth/login',
+        '/auth/register',
+        '/auth/token',
+        '/password-reset',
+      ];
+      const isAuthEndpoint = authEndpoints.some((endpoint) =>
+        originalRequest.url?.includes(endpoint)
+      );
+
+      if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
         if (isRefreshing) {
           return new Promise((resolve, reject) => {
             failedQueue.push({ resolve, reject });
