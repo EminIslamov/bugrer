@@ -1,14 +1,28 @@
 import axios from 'axios';
 
 export const BASE_URL = 'https://norma.education-services.ru/api';
+export const BASE_URL_AUTH = 'https://norma.education-services.ru/api';
 
 /**
  * Базовый экземпляр axios с предустановленной конфигурацией
+ * Для старых эндпоинтов (ингредиенты, заказы и т.д.)
  */
 export const apiService = axios.create({
   baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
+  },
+});
+
+/**
+ * Экземпляр axios для новых эндпоинтов аутентификации
+ * (login, register, password-reset)
+ */
+export const authApiService = axios.create({
+  baseURL: BASE_URL_AUTH,
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
   },
 });
 
@@ -53,5 +67,10 @@ apiService.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+/**
+ * Interceptor для authApiService будет настроен через authInterceptor.js
+ * Это позволяет получать токен из Redux store и автоматически обновлять его при 401
+ */
 
 export default apiService;
