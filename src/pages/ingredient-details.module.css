@@ -1,0 +1,10 @@
+.ingredient_details_page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.ingredient_details_content {
+  display: flex;
+  justify-content: center;
+}

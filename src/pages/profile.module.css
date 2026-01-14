@@ -1,0 +1,68 @@
+.profile_container {
+  display: flex;
+  justify-content: center;
+  min-height: calc(100vh - 88px);
+  padding: 40px 20px;
+}
+
+.profile_content {
+  display: flex;
+  gap: 60px;
+  width: 100%;
+  max-width: 1240px;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  min-width: 320px;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav_link {
+  display: flex;
+  align-items: center;
+  height: 64px;
+  color: var(--text-inactive-color);
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.nav_link:hover {
+  color: var(--text-primary-color);
+}
+
+.nav_link_active {
+  color: var(--text-primary-color);
+}
+
+.hint {
+  opacity: 0.4;
+}
+
+.form_container {
+  flex: 1;
+  max-width: 480px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.input_wrapper {
+  width: 100%;
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+}

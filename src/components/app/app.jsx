@@ -1,12 +1,13 @@
 import { Preloader } from '@krgaa/react-developer-burger-ui-components';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useDispatch, useSelector } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 
+import { AppRouter } from '@/routes/app-router';
 import { AppHeader } from '@components/app-header/app-header';
-import { BurgerConstructor } from '@components/burger-constructor/burger-constructor';
-import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredients';
+import { refreshToken, getUser } from '@services/slices/authSlice';
 import { fetchIngredients } from '@services/slices/ingredientsSlice';
 
 import styles from './app.module.css';
@@ -14,6 +15,48 @@ import styles from './app.module.css';
 export const App = () => {
   const dispatch = useDispatch();
   const { isLoading, error } = useSelector((state) => state.ingredients);
+  const {
+    refreshToken: storedRefreshToken,
+    accessToken,
+    isLoading: authLoading,
+    isRestoringSession,
+  } = useSelector((state) => state.auth);
+  const hasTriedRestore = useRef(false);
+  const hasTriedGetUser = useRef(false);
+
+  // Восстановление сессии при загрузке приложения (только один раз)
+  useEffect(() => {
+    // Если есть refreshToken, но нет accessToken, обновляем токен
+    // Это происходит при перезагрузке страницы, когда accessToken теряется (он в памяти)
+    if (!hasTriedRestore.current && storedRefreshToken && !accessToken && !authLoading) {
+      hasTriedRestore.current = true;
+      dispatch(refreshToken(storedRefreshToken));
+    }
+  }, [dispatch, storedRefreshToken, accessToken, authLoading]);
+
+  // После успешного обновления токена получаем данные пользователя
+  useEffect(() => {
+    // Если токен обновлен (есть accessToken) и сессия восстановлена, получаем данные пользователя
+    // Это происходит после успешного refreshToken при перезагрузке страницы
+    if (
+      !hasTriedGetUser.current &&
+      accessToken &&
+      !authLoading &&
+      !isRestoringSession &&
+      storedRefreshToken
+    ) {
+      hasTriedGetUser.current = true;
+      dispatch(getUser());
+    }
+  }, [dispatch, accessToken, authLoading, isRestoringSession, storedRefreshToken]);
+
+  // Сбрасываем флаг при разлогине, чтобы при следующем логине можно было получить пользователя
+  useEffect(() => {
+    if (!storedRefreshToken) {
+      hasTriedGetUser.current = false;
+      hasTriedRestore.current = false;
+    }
+  }, [storedRefreshToken]);
 
   useEffect(() => {
     dispatch(fetchIngredients());
@@ -27,18 +70,14 @@ export const App = () => {
     <>
       {isLoading && <Preloader />}
       {!isLoading && (
-        <DndProvider backend={HTML5Backend}>
-          <div className={styles.app}>
-            <AppHeader />
-            <h1 className={`${styles.title} text text_type_main-large mt-10 mb-5 pl-5`}>
-              Соберите бургер
-            </h1>
-            <main className={`${styles.main} pl-5 pr-5`}>
-              <BurgerIngredients />
-              <BurgerConstructor />
-            </main>
-          </div>
-        </DndProvider>
+        <BrowserRouter>
+          <DndProvider backend={HTML5Backend}>
+            <div className={styles.app}>
+              <AppHeader />
+              <AppRouter />
+            </div>
+          </DndProvider>
+        </BrowserRouter>
       )}
     </>
   );
