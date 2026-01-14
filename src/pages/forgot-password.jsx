@@ -1,14 +1,15 @@
 import { Button, Input } from '@krgaa/react-developer-burger-ui-components';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { useForm } from '@hooks/useForm';
 import { clearError, requestPasswordReset } from '@services/slices/authSlice';
 
 import styles from './forgot-password.module.css';
 
 export const ForgotPasswordPage = () => {
-  const [email, setEmail] = useState('');
+  const { values, handleChange } = useForm({ email: '' });
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isLoading, error, passwordResetSuccess } = useSelector((state) => state.auth);
@@ -30,7 +31,7 @@ export const ForgotPasswordPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(requestPasswordReset(email));
+    dispatch(requestPasswordReset(values.email));
   };
 
   return (
@@ -42,8 +43,8 @@ export const ForgotPasswordPage = () => {
           <Input
             type="email"
             placeholder="Укажите e-mail"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={values.email}
+            onChange={handleChange}
             name="email"
             disabled={isLoading}
           />
@@ -58,7 +59,7 @@ export const ForgotPasswordPage = () => {
             type="primary"
             size="medium"
             htmlType="submit"
-            disabled={isLoading || !email}
+            disabled={isLoading || !values.email}
           >
             {isLoading ? 'Отправка...' : 'Восстановить'}
           </Button>

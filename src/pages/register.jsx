@@ -1,34 +1,28 @@
 import { Button, Input } from '@krgaa/react-developer-burger-ui-components';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
+import { useForm } from '@hooks/useForm';
 import { clearError, register } from '@services/slices/authSlice';
 
 import styles from './register.module.css';
 
 export const RegisterPage = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { values, handleChange } = useForm({ name: '', email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { isLoading, error, user } = useSelector((state) => state.auth);
+  const { isLoading, error } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(clearError());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (user) {
-      navigate('/');
-    }
-  }, [user, navigate]);
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(register({ email, password, name }));
+    dispatch(
+      register({ email: values.email, password: values.password, name: values.name })
+    );
   };
 
   return (
@@ -40,8 +34,8 @@ export const RegisterPage = () => {
           <Input
             type="text"
             placeholder="Имя"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={values.name}
+            onChange={handleChange}
             name="name"
             disabled={isLoading}
           />
@@ -51,8 +45,8 @@ export const RegisterPage = () => {
           <Input
             type="email"
             placeholder="E-mail"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={values.email}
+            onChange={handleChange}
             name="email"
             disabled={isLoading}
           />
@@ -62,11 +56,10 @@ export const RegisterPage = () => {
           <Input
             type={showPassword ? 'text' : 'password'}
             placeholder="Пароль"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={values.password}
+            onChange={handleChange}
             name="password"
             icon={showPassword ? 'HideIcon' : 'ShowIcon'}
-            isIcon
             onIconClick={() => setShowPassword(!showPassword)}
             disabled={isLoading}
           />
@@ -81,7 +74,7 @@ export const RegisterPage = () => {
             type="primary"
             size="medium"
             htmlType="submit"
-            disabled={isLoading || !name || !email || !password}
+            disabled={isLoading || !values.name || !values.email || !values.password}
           >
             {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
           </Button>

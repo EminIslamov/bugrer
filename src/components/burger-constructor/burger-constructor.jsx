@@ -3,9 +3,11 @@ import classNames from 'classnames';
 import { useCallback, useMemo } from 'react';
 import { useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import { Modal } from '@/components/ui/modal/modal';
 import { useModal } from '@/hooks/useModal';
+import { selectIsLoggedIn } from '@services/slices/authSlice';
 import {
   addIngredient,
   clearConstructor,
@@ -20,12 +22,15 @@ import styles from './burger-constructor.module.css';
 
 export const BurgerConstructor = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { bun, ingredients } = useSelector((state) => state.burgerConstructor);
   const {
     order,
     isLoading: isOrderLoading,
     error: orderError,
   } = useSelector((state) => state.order);
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const { isModalOpen, openModal, closeModal } = useModal();
 
@@ -54,6 +59,14 @@ export const BurgerConstructor = () => {
 
   const handleOrderClick = () => {
     if (!bun) return;
+
+    // Проверяем авторизацию перед отправкой заказа
+    if (!isLoggedIn) {
+      // Сохраняем текущий путь в sessionStorage для надежности
+      sessionStorage.setItem('redirectAfterLogin', location.pathname + location.search);
+      navigate('/login', { state: { from: location } });
+      return;
+    }
 
     // Собираем ID всех ингредиентов: булка (верх) + начинки + булка (низ)
     const ingredientIds = [bun._id, ...ingredients.map((item) => item._id), bun._id];

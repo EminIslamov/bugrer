@@ -163,6 +163,7 @@ const authSlice = createSlice({
       state.isRestoringSession = false;
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('user');
+      sessionStorage.removeItem('redirectAfterLogin');
     },
   },
   extraReducers: (builder) => {
@@ -224,6 +225,7 @@ const authSlice = createSlice({
         state.refreshToken = null;
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
+        sessionStorage.removeItem('redirectAfterLogin');
       })
       .addCase(logout.rejected, (state, action) => {
         state.isLoading = false;
@@ -232,6 +234,7 @@ const authSlice = createSlice({
         state.refreshToken = null;
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
+        sessionStorage.removeItem('redirectAfterLogin');
         state.error =
           action.payload?.message ||
           action.error?.response?.data?.message ||
@@ -340,5 +343,8 @@ const authSlice = createSlice({
 
 export const { clearError, clearPasswordResetSuccess, clearAuthData } =
   authSlice.actions;
+
+export const selectIsLoggedIn = (state) =>
+  !!(state.auth.refreshToken && state.auth.accessToken);
 
 export default authSlice.reducer;

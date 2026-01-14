@@ -1,36 +1,26 @@
 import { Button, Input } from '@krgaa/react-developer-burger-ui-components';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
+import { useForm } from '@hooks/useForm';
 import { clearError, login } from '@services/slices/authSlice';
 
 import styles from './login.module.css';
 
 export const LoginPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { values, handleChange } = useForm({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { isLoading, error, user } = useSelector((state) => state.auth);
+  const { isLoading, error } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(clearError());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (user) {
-      // Редиректим на сохраненный маршрут или на главную
-      const from = location.state?.from?.pathname || '/';
-      navigate(from, { replace: true });
-    }
-  }, [user, navigate, location]);
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(login({ email, password }));
+    dispatch(login({ email: values.email, password: values.password }));
   };
 
   return (
@@ -42,8 +32,8 @@ export const LoginPage = () => {
           <Input
             type="email"
             placeholder="E-mail"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={values.email}
+            onChange={handleChange}
             name="email"
             disabled={isLoading}
           />
@@ -53,11 +43,10 @@ export const LoginPage = () => {
           <Input
             type={showPassword ? 'text' : 'password'}
             placeholder="Пароль"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={values.password}
+            onChange={handleChange}
             name="password"
             icon={showPassword ? 'HideIcon' : 'ShowIcon'}
-            isIcon
             onIconClick={() => setShowPassword(!showPassword)}
             disabled={isLoading}
           />
@@ -72,7 +61,7 @@ export const LoginPage = () => {
             type="primary"
             size="medium"
             htmlType="submit"
-            disabled={isLoading || !email || !password}
+            disabled={isLoading || !values.email || !values.password}
           >
             {isLoading ? 'Вход...' : 'Войти'}
           </Button>
