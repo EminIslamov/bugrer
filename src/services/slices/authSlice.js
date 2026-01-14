@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { apiService } from '@api/api';
 
-// Access token хранится только в памяти (best
+// Access token хранится только в памяти
 // Refresh token хранится в localStorage
 const getInitialState = () => {
   const refreshToken = localStorage.getItem('refreshToken');
