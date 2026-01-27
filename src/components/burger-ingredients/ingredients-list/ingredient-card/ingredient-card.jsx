@@ -3,17 +3,15 @@ import classNames from 'classnames';
 import { useMemo } from 'react';
 import { useDrag } from 'react-dnd';
 import { useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Modal } from '@/components/ui/modal/modal';
-import { useModal } from '@/hooks/useModal';
 import { IngredientType } from '@/utils/types';
-
-import { IngredientsDetails } from '../ingredients-details/ingredients-details';
 
 import styles from './ingredient-card.module.css';
 
 export const IngredientCard = ({ ingredient }) => {
-  const { isModalOpen, openModal, closeModal } = useModal();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // Получаем данные из конструктора для подсчёта количества
   const { bun, ingredients: constructorIngredients } = useSelector(
@@ -45,7 +43,17 @@ export const IngredientCard = ({ ingredient }) => {
         className={classNames(styles.ingredient_card, {
           [styles.dragging]: isDragging,
         })}
-        onClick={openModal}
+        onClick={() => {
+          // Если мы на главной странице, открываем модальное окно и меняем URL
+          if (location.pathname === '/') {
+            navigate(`/ingredients/${ingredient._id}`, {
+              state: { background: location },
+            });
+          } else {
+            // Если мы не на главной, просто переходим на страницу
+            navigate(`/ingredients/${ingredient._id}`);
+          }
+        }}
         role="button"
         tabIndex={0}
         style={{ opacity: isDragging ? 0.5 : 1 }}
@@ -63,12 +71,6 @@ export const IngredientCard = ({ ingredient }) => {
 
         <div className={styles.ingredient_name}>{ingredient.name}</div>
       </div>
-
-      {isModalOpen && (
-        <Modal onClose={closeModal} title="Детали ингредиента">
-          <IngredientsDetails ingredient={ingredient} />
-        </Modal>
-      )}
     </>
   );
 };
