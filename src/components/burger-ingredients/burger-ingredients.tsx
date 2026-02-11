@@ -13,9 +13,7 @@ import styles from './burger-ingredients.module.css';
 
 export const BurgerIngredients: FC = (): ReactElement => {
   const [activeTab, setActiveTab] = useState<'bun' | 'sauce' | 'main'>('bun');
-  const { items: ingredients } = useAppSelector((state) => state.ingredients) as {
-    items: IngredientType[];
-  };
+  const { items: ingredients } = useAppSelector((state) => state.ingredients);
 
   const bunsRef: RefType<HTMLDivElement> = useRef(null);
   const saucesRef: RefType<HTMLDivElement> = useRef(null);

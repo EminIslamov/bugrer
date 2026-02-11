@@ -20,7 +20,7 @@ import { OrderDetails } from './order-details/order-details';
 
 import type { FC, ReactElement } from 'react';
 
-import type { ConstructorIngredientType, IngredientType } from '@/utils/types';
+import type { IngredientType } from '@/utils/types';
 
 import styles from './burger-constructor.module.css';
 
@@ -32,23 +32,13 @@ export const BurgerConstructor: FC = (): ReactElement => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { bun, ingredients } = useAppSelector((state) => state.burgerConstructor) as {
-    bun: IngredientType | null;
-    ingredients: ConstructorIngredientType[];
-  };
+  const { bun, ingredients } = useAppSelector((state) => state.burgerConstructor);
   const {
     order,
     isLoading: isOrderLoading,
     error: orderError,
-  } = useAppSelector(
-    (state) =>
-      state.order as {
-        order: { order?: { number?: number } } | null;
-        isLoading: boolean;
-        error: string | null;
-      }
-  );
-  const isLoggedIn = useAppSelector(selectIsLoggedIn as never) as boolean;
+  } = useAppSelector((state) => state.order);
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
   const { isModalOpen, openModal, closeModal } = useModal();
 
@@ -104,7 +94,7 @@ export const BurgerConstructor: FC = (): ReactElement => {
       bun._id,
     ];
 
-    dispatch(createOrder(ingredientIds as never));
+    dispatch(createOrder(ingredientIds));
     openModal();
   };
 

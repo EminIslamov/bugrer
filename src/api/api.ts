@@ -1,6 +1,9 @@
 import axios, { type AxiosInstance } from 'axios';
 
-export const BASE_URL = 'https://norma.education-services.ru/api';
+const API_HOST = 'norma.education-services.ru';
+
+export const BASE_URL = `https://${API_HOST}/api`;
+export const WS_BASE_URL = `wss://${API_HOST}`;
 
 export const apiService: AxiosInstance = axios.create({
   baseURL: BASE_URL,

@@ -31,7 +31,7 @@ export const RegisterPage: FC = (): ReactElement => {
         email: values.email,
         password: values.password,
         name: values.name,
-      } as never)
+      })
     );
   };
 
