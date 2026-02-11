@@ -17,6 +17,18 @@ export type ConstructorIngredientType = IngredientType & {
   uniqueId: string;
 };
 
+export type OrderStatus = 'created' | 'pending' | 'done';
+
+export type Order = {
+  _id: string;
+  ingredients: string[];
+  status: OrderStatus;
+  name?: string;
+  number: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type RefType<T = Element> = {
   current: T | null;
 };

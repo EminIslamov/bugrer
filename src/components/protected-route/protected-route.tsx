@@ -17,7 +17,7 @@ export const ProtectedRoute: FC<ProtectedRouteProps> = ({
   const { refreshToken, isLoading, isRestoringSession } = useAppSelector(
     (state) => state.auth
   );
-  const isLoggedIn = useAppSelector(selectIsLoggedIn as never) as boolean;
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
   const location = useLocation();
   const publicPaths = ['/login', '/register', '/forgot-password', '/reset-password'];
 

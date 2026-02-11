@@ -35,7 +35,7 @@ export const ForgotPasswordPage: FC = (): ReactElement => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    dispatch(requestPasswordReset(values.email as never));
+    dispatch(requestPasswordReset(values.email));
   };
 
   return (

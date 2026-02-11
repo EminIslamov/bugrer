@@ -1,6 +1,12 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-const initialState = {
+import type { IngredientType } from '@/utils/types';
+
+type CurrentIngredientState = {
+  ingredient: IngredientType | null;
+};
+
+const initialState: CurrentIngredientState = {
   ingredient: null,
 };
 
@@ -8,8 +14,7 @@ const currentIngredientSlice = createSlice({
   name: 'currentIngredient',
   initialState,
   reducers: {
-    // Установить текущий ингредиент
-    setCurrentIngredient: (state, action) => {
+    setCurrentIngredient: (state, action: PayloadAction<IngredientType>) => {
       state.ingredient = action.payload;
     },
     clearCurrentIngredient: (state) => {

@@ -60,7 +60,7 @@ export const ResetPasswordPage: FC = (): ReactElement => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     hasSubmittedReset.current = true;
-    dispatch(resetPassword({ password: values.password, token: values.token } as never));
+    dispatch(resetPassword({ password: values.password, token: values.token }));
   };
 
   return (

@@ -2,13 +2,21 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { apiService } from '@api/api';
 
-const initialState = {
+import type { IngredientType } from '@/utils/types';
+
+type IngredientsState = {
+  items: IngredientType[];
+  isLoading: boolean;
+  error: string | null;
+};
+
+const initialState: IngredientsState = {
   items: [],
   isLoading: false,
   error: null,
 };
 
-export const fetchIngredients = createAsyncThunk(
+export const fetchIngredients = createAsyncThunk<IngredientType[]>(
   'ingredients/fetchIngredients',
   async () => {
     const response = await apiService.get('/ingredients');
@@ -32,7 +40,7 @@ const ingredientsSlice = createSlice({
       })
       .addCase(fetchIngredients.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message;
+        state.error = action.error.message ?? 'Ошибка загрузки ингредиентов';
       });
   },
 });

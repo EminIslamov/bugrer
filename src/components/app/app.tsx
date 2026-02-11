@@ -32,7 +32,7 @@ export const App: FC = (): ReactElement => {
     // Это происходит при перезагрузке страницы, когда accessToken теряется (он в памяти)
     if (!hasTriedRestore.current && storedRefreshToken && !accessToken && !authLoading) {
       hasTriedRestore.current = true;
-      dispatch(refreshToken(storedRefreshToken as never));
+      dispatch(refreshToken(storedRefreshToken));
     }
   }, [dispatch, storedRefreshToken, accessToken, authLoading]);
 

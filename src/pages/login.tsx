@@ -22,7 +22,7 @@ export const LoginPage: FC = (): ReactElement => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    dispatch(login({ email: values.email, password: values.password } as never));
+    dispatch(login({ email: values.email, password: values.password }));
   };
 
   return (

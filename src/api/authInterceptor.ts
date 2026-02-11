@@ -114,7 +114,6 @@ export const setupAuthInterceptor = (): void => {
           }
 
           const dispatch = store.dispatch as AppDispatch;
-          // @ts-expect-error - refreshTokenAction is not fully typed in authSlice.js
           const result = await dispatch(refreshTokenAction(refreshToken));
 
           if (refreshTokenAction.fulfilled.match(result)) {

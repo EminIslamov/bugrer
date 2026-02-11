@@ -1,26 +1,18 @@
-import { Button, Input, Preloader } from '@krgaa/react-developer-burger-ui-components';
+import { Preloader } from '@krgaa/react-developer-burger-ui-components';
 import { useEffect } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/redux-hooks';
-import { useForm } from '@hooks/useForm';
-import { clearError, getUser, logout, updateUser } from '@services/slices/authSlice';
+import { getUser, logout } from '@services/slices/authSlice';
 
-import type { FC, FormEvent, ReactElement } from 'react';
+import type { FC, ReactElement } from 'react';
 
 import styles from './profile.module.css';
 
-type UserFormValues = {
-  name?: string;
-  email?: string;
-  password?: string;
-};
-
 export const ProfilePage: FC = (): ReactElement => {
-  const { values, handleChange, setValues } = useForm<UserFormValues>({});
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { user, isLoading, error, refreshToken } = useAppSelector((state) => state.auth);
+  const { user, isLoading, refreshToken } = useAppSelector((state) => state.auth);
 
   // Загружаем данные пользователя при монтировании компонента
   useEffect(() => {
@@ -30,55 +22,15 @@ export const ProfilePage: FC = (): ReactElement => {
     }
   }, [dispatch, user]);
 
-  // Заполняем форму данными пользователя
-  useEffect(() => {
-    if (user) {
-      setValues({
-        name: user.name || '',
-        email: user.email || '',
-        password: '',
-      });
-    }
-  }, [user, setValues]);
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
-    // Отправляем только измененные данные
-    dispatch(
-      updateUser({
-        name: values.name ?? '',
-        email: values.email ?? '',
-        password: values.password ?? '',
-      } as never)
-    );
-  };
-
-  const handleCancel = (): void => {
-    // Возвращаем к исходным значениям
-    if (user) {
-      setValues({
-        name: user.name || '',
-        email: user.email || '',
-        password: '',
-      });
-    }
-    dispatch(clearError());
-  };
-
   const handleLogout = async (): Promise<void> => {
     if (refreshToken) {
       // refreshToken строка в состоянии auth
       // типизируем как never, чтобы не трогать слайс
 
-      await dispatch(logout(refreshToken as never));
+      await dispatch(logout(refreshToken));
       navigate('/login');
     }
   };
-
-  const isFormChanged =
-    values.name !== (user?.name || '') ||
-    values.email !== (user?.email || '') ||
-    values.password !== '';
 
   return (
     <div className={styles.profile_container}>
@@ -116,71 +68,7 @@ export const ProfilePage: FC = (): ReactElement => {
             </p>
           </aside>
 
-          <div className={styles.form_container}>
-            <form className={styles.form} onSubmit={handleSubmit}>
-              <div className={`${styles.input_wrapper} mb-6`}>
-                <Input
-                  type="text"
-                  placeholder="Имя"
-                  value={values.name || ''}
-                  onChange={handleChange}
-                  name="name"
-                  icon="EditIcon"
-                />
-              </div>
-
-              <div className={`${styles.input_wrapper} mb-6`}>
-                <Input
-                  type="email"
-                  placeholder="Логин"
-                  value={values.email || ''}
-                  onChange={handleChange}
-                  name="email"
-                  icon="EditIcon"
-                />
-              </div>
-
-              <div className={`${styles.input_wrapper} mb-6`}>
-                <Input
-                  type="password"
-                  placeholder="Пароль"
-                  value={values.password || ''}
-                  onChange={handleChange}
-                  name="password"
-                  icon="EditIcon"
-                  autoComplete="new-password"
-                />
-              </div>
-
-              {error && (
-                <p className="text text_type_main-default text_color_error mb-6">
-                  {error}
-                </p>
-              )}
-
-              {isFormChanged && (
-                <div className={styles.buttons}>
-                  <Button
-                    type="secondary"
-                    size="medium"
-                    htmlType="button"
-                    onClick={handleCancel}
-                    disabled={isLoading}
-                  >
-                    Отмена
-                  </Button>
-                  <Button
-                    type="primary"
-                    size="medium"
-                    htmlType="submit"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? 'Сохранение...' : 'Сохранить'}
-                  </Button>
-                </div>
-              )}
-            </form>
-          </div>
+          <Outlet />
         </div>
       )}
     </div>
