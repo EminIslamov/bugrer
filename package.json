@@ -12,6 +12,7 @@
     "cypress": "cypress run",
     "dev": "vite",
     "deploy": "gh-pages -d dist",
+    "deploy-script": "npm run build && scp -r ./dist/* tirion@84.201.137.172:/home/tirion/react-burger-js-starter",
     "eslint": "eslint src/ --fix",
     "lint": "npm run stylelint && npm run eslint && npm run prettier",
     "predeploy": "npm run build",
