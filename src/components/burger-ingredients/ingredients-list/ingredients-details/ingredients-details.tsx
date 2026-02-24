@@ -14,7 +14,7 @@ export const IngredientsDetails: FC<IngredientsDetailsProps> = ({
   ingredient,
 }): ReactElement => {
   return (
-    <div className="pb-15">
+    <div className="pb-15" data-cy="ingredient-details">
       <div className={styles.ingredient_detail_content}>
         <img src={ingredient.image_large} alt={ingredient.name} />
 

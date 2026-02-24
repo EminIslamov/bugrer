@@ -41,6 +41,7 @@ export const OrderDetails: FC<OrderDetailsProps> = ({
   return (
     <div className={classNames(styles.order_details_content, 'pt-30 pb-30')}>
       <div
+        data-cy="order-number"
         className={classNames(styles.order_number, 'text text_type_digits-large mb-2')}
       >
         {orderNumber}

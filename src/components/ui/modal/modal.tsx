@@ -54,12 +54,13 @@ export const Modal: FC<ModalProps> = ({ children, onClose, title }): ReactElemen
 
   return createPortal(
     <ModalOverlay onClose={handleOverlayClick}>
-      <div className={styles.modal}>
+      <div className={styles.modal} data-cy="modal">
         <button
           className={styles.close_button}
           onClick={handleCloseClick}
           type="button"
           aria-label="Закрыть"
+          data-cy="modal-close"
         >
           <CloseIcon type="primary" />
         </button>
