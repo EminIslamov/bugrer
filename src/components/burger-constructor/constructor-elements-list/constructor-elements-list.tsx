@@ -22,7 +22,7 @@ export const ConstructorElementsList: FC<ConstructorElementsListProps> = ({
     <ul className={styles.constructor_elements_list}>
       {/* Верхняя булка */}
       {bun && (
-        <li className={styles.bun} key={`${bun._id}-top`}>
+        <li className={styles.bun} key={`${bun._id}-top`} data-cy="constructor-bun-top">
           <ConstructorElement
             type="top"
             isLocked
@@ -35,7 +35,10 @@ export const ConstructorElementsList: FC<ConstructorElementsListProps> = ({
 
       {/* Остальные ингредиенты - скроллируемая область */}
       <li className={styles.scrollable_container}>
-        <ul className={classNames('custom-scroll', styles.scrollable_list)}>
+        <ul
+          className={classNames('custom-scroll', styles.scrollable_list)}
+          data-cy="constructor-ingredients"
+        >
           {ingredients.length > 0 ? (
             ingredients.map((ingredient, index) => (
               <DraggableIngredient
@@ -56,7 +59,11 @@ export const ConstructorElementsList: FC<ConstructorElementsListProps> = ({
 
       {/* Нижняя булка */}
       {bun && (
-        <li className={styles.bun} key={`${bun._id}-bottom`}>
+        <li
+          className={styles.bun}
+          key={`${bun._id}-bottom`}
+          data-cy="constructor-bun-bottom"
+        >
           <ConstructorElement
             type="bottom"
             isLocked

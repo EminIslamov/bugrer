@@ -56,6 +56,8 @@ export const IngredientCard: FC<IngredientCardProps> = ({
     <>
       <div
         ref={dragRef}
+        data-cy="ingredient-card"
+        data-ingredient-type={ingredient.type}
         className={classNames(styles.ingredient_card, {
           [styles.dragging]: isDragging,
         })}

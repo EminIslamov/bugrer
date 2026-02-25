@@ -111,6 +111,7 @@ export const BurgerConstructor: FC = (): ReactElement => {
     <>
       <section
         ref={dropRef as never}
+        data-cy="constructor-drop-zone"
         className={classNames(styles.burger_constructor, {
           [styles.hover]: isHover,
         })}
@@ -129,6 +130,7 @@ export const BurgerConstructor: FC = (): ReactElement => {
             onClick={handleOrderClick}
             htmlType="button"
             disabled={!bun || isOrderLoading}
+            data-cy="order-button"
           >
             {isOrderLoading ? 'Оформление...' : 'Оформить заказ'}
           </Button>
