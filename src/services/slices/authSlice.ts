@@ -92,7 +92,7 @@ const getInitialState = (): AuthState => {
   };
 };
 
-const initialState = getInitialState();
+export const initialState = getInitialState();
 
 export const login = createAsyncThunk<
   AuthTokensWithUserResponse,

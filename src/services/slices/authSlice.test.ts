@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 
 import reducer, {
+  initialState,
   clearError,
   clearPasswordResetSuccess,
   clearAuthData,
@@ -13,16 +14,6 @@ import reducer, {
   getUser,
   updateUser,
 } from './authSlice';
-
-const initialState = {
-  user: null,
-  accessToken: null,
-  refreshToken: null,
-  isLoading: false,
-  isRestoringSession: false,
-  error: null,
-  passwordResetSuccess: false,
-};
 
 const mockUser = { email: 'test@test.com', name: 'Test User' };
 
